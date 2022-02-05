@@ -13,7 +13,7 @@ var createTask = function (taskText, taskDate, taskList) {
   // append span and p element to parent li
   taskLi.append(taskSpan, taskP);
 
-// append to ul list on the page
+  // append to ul list on the page
   $("#list-" + taskList).append(taskLi);
 };
 
@@ -85,7 +85,7 @@ $(".list-group").on("click", "p", function () {
     .text()
     .trim();
 
-    //replace p element with a new textarea
+  //replace p element with a new textarea
   var textInput = $("<textarea>")
     .addClass("form-control")
     .val(text);
@@ -96,34 +96,34 @@ $(".list-group").on("click", "p", function () {
 });
 
 //editable field was un-focused
-$(".list-group").on("blur", "textarea", function() {
-// get the textarea's current value/text
-var text = $(this)
+$(".list-group").on("blur", "textarea", function () {
+  // get the textarea's current value/text
+  var text = $(this)
 
-// get status type and position in the list
-var status = $(this)
-  .closest(".list-group")
-  .attr("id")
-  .replace("list-", "");
-var index = $(this)
-  .closest(".list-group-item")
-  .index();
+  // get status type and position in the list
+  var status = $(this)
+    .closest(".list-group")
+    .attr("id")
+    .replace("list-", "");
+  var index = $(this)
+    .closest(".list-group-item")
+    .index();
 
   //update task in array and re-save to localstorage
   tasks[status][index].text = text;
-saveTasks();
+  saveTasks();
 
-// recreate p element
-var taskP = $("<p>")
-  .addClass("m-1")
-  .text(text);
+  // recreate p element
+  var taskP = $("<p>")
+    .addClass("m-1")
+    .text(text);
 
-// replace textarea with p element
-$(this).replaceWith(taskP);
+  // replace textarea with p element
+  $(this).replaceWith(taskP);
 });
 
 // due date was clicked
-$(".list-group").on("click", "span", function() {
+$(".list-group").on("click", "span", function () {
   // get current text
   var date = $(this)
     .text()
@@ -141,27 +141,27 @@ $(".list-group").on("click", "span", function() {
 });
 
 // value of due date was changed
-$(".list-group").on("blur", "input[type='text']", function() {
+$(".list-group").on("blur", "input[type='text']", function () {
   var date = $(this).val();
 
- //get status type and postion in the list
+  //get status type and postion in the list
   var status = $(this)
-  .closest(".list-group")
-  .attr("id")
-  .replace("list-", "");
+    .closest(".list-group")
+    .attr("id")
+    .replace("list-", "");
   var index = $(this)
-  .closest(".list-group-item")
-  .index();
+    .closest(".list-group-item")
+    .index();
 
-// update task in array and re-save to localstorage
-tasks[status][index].date = date;
-saveTasks();
+  // update task in array and re-save to localstorage
+  tasks[status][index].date = date;
+  saveTasks();
 
-// recreate span element with bootstrap classes
-var taskSpan = $("<span>")
-  .addClass("badge badge-primary badge-pill")
-  .text(date);
-$(this).replaceWith(taskSpan);
+  // recreate span element with bootstrap classes
+  var taskSpan = $("<span>")
+    .addClass("badge badge-primary badge-pill")
+    .text(date);
+  $(this).replaceWith(taskSpan);
 });
 
 // remove all tasks
@@ -173,12 +173,40 @@ $("#remove-tasks").on("click", function () {
   saveTasks();
 });
 
-$(".card .list-group").sortable({
-  connectWith: $(".card .list-group")
-});
+$(".card .list-group").sortable( {
+  connectWith: $(".card .list-group"),
+  scroll: false,
+  tolerance: "pointer",
+  helper: "clone",
+  activate: function (event) {
+    console.log("activate", this);
+  },
+  deactivate: function (event) {
+    console.log("deactivate", this);
+  },
+  over: function (event) {
+    console.log("over", event.target);
+  },
+  out: function (event) {
+    console.log("out", event.target);
+  },
+  update: function (event) {
+    //loop over current set of children in sortable list
+    $(this).children().each(function () {
+      var text = $(this)
+      .find('p')
+      .text()
+      .trim();
 
+      var date = $(this)
+      .find('span')
+      .text()
+      .trim();
+
+      console.log(text, date);
+    });
 
 
 // load tasks for the first time
 loadTasks();
-
+  
